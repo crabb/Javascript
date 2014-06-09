@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Image 360degree rotate</title>
+<style type="text/css">
+body {
+	margin:0;
+}
+
+img {
+	width:640px;
+	height:378px;
+	position:absolute;
+	left:50%;
+	top:50%;
+	margin-top:-189px;
+	margin-left:-320px;
+}
+</style>
+<script type="text/javascript">
+window.onload = function()
+{
+	var x = 0;
+	var oImg = document.getElementById('img');
+	var aImg = document.getElementsByTagName('img');
+	var oLastImg = oImg;
+	//定义步速
+	var iLastX = 0;
+	var iStep = 0;
+	var timer = null;
+	
+	//解决加载图片频繁改变src卡图bug
+	for(var i = 1; i < 77; i++)
+	{
+		(function(oNewImg){
+			var oImgAdd = new Image();
+			oImgAdd.onload = function()
+			{
+				oNewImg.src = this.src;
+			};
+			oImgAdd.src = './images/img360deg/miaov (' + i + ').jpg';
+			oNewImg.style.display = 'none';
+			document.body.appendChild(oNewImg);
+		})(document.createElement('img'));
+	}
+	
+	document.onmousedown = function(ev)
+	{
+		var oEvent = ev || event;
+		var disX = oEvent.clientX - x;
+		
+		//先关闭定时器
+		clearInterval(timer);
+		
+		document.onmousemove = function(ev)
+		{
+			var oEvent = ev || event;
+			x = oEvent.clientX - disX;
+			
+			motion();
+			iStep = x - iLastX;
+			iLastX = x;
+			
+//			oImg.src = './images/img360deg/miaov (' + l + ').jpg';
+			return false;
+		};
+		
+		document.onmouseup = function()
+		{
+			document.onmousemove = null;
+			document.onmouseup = null;
+			
+			//鼠标抬起时开始运动
+			timer = setInterval(function()
+			{
+				x += iStep;
+				motion();
+				
+			}, 30);
+		};
+		function motion()
+		{
+			if(iStep > 0 )
+			{
+				iStep--;
+			}
+			else
+			{
+				iStep++;
+			}
+			
+			if(iStep == 0)
+			{
+				clearInterval(timer);
+			}
+			
+			var l = parseInt(-x / 10);
+			if(l > 0)
+			{
+				l = l % 77;
+			}
+			else
+			{
+				l = l + (-Math.floor(l / 77) * 77);
+			}
+			
+			document.title = iStep;
+			
+			if(oLastImg != aImg[l])
+			{
+				oLastImg.style.display = 'none';
+				aImg[l].style.display = 'block';
+				oLastImg = aImg[l];
+			}
+		}
+		return false;
+	};
+};
+</script>
+</head>
+<body>
+	<img id="img" src="./images/img360deg/miaov (0).jpg" alt="360degree rotate" />
+</body>
+</html>

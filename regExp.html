@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>RegExp正则表达式</title>
+<script type="text/javascript">
+//正则search应用：i->忽略大小写
+var sNavAgent = window.navigator.userAgent;
+if(sNavAgent.search(/firefox/i) != -1)
+{
+	alert('FF');
+}
+else if(sNavAgent.search(/chrome/i) != -1)
+{
+	alert('CHR');
+}
+else if(sNavAgent.search(/msie/i) != -1)
+{
+	alert('IE...');
+}
+
+//正则match应用：+ ->不限长度, g->查找全局(全部)
+var str1 = 'dfkdsk3t456  3534 342 3sdfk';
+var reg = /\d+/g;
+//alert(str1.match(reg));
+
+//正则replace应用
+var str2 = 'abcdaef';
+//alert(str2.replace('a', 'A'));
+//alert(str2.replace(/a/ig, 'X'));
+
+/*
+ * 字符类：所有[]中字符只匹配一个
+ * [123]:1或2或3
+ * [0-9]:数字范围 == \d(单个)
+ * [abc]:a或b或c
+ * [a-z]:字母范围
+ * [0-9a-z]:数字范围+字母范围
+ * [^a]:除a以外都可匹配
+ * \w:word 包括[0-9a-z_]
+ * \s:space空格
+ * \D:[^0-9]除数字以外
+ * \W:[^a-z0-9_]除字母、数字、下划线以外
+ * \S:除空格以外
+ * ------------------------------------
+ * 量词：
+ * {n,m}:最少出现n次，最多出现m次
+ * {n,}:最少出现n次，最多出现不限次
+ * {,m}:最少出现不限次，最多出现m次
+ * {n}:正好出现n次
+ * +:{1,}至少出现一次，最多出现不限次
+ * *:{0,}可以不出现，若出现最多不限次
+ * ?:{0,1}可以不出现，若出现最多一次
+ * ^n:匹配任何开头为 n 的字符串
+ * n$:匹配任何结尾为 n 的字符串
+ * ------------------------------------
+ * 正则匹配邮箱:
+ * mycontactemail @ 126 . com
+ * my163contactemail @ 163 . com
+ * 
+ * 邮箱名:字母、数字、下划线 -> \w+(可重复出现多次)
+ * @: -> @
+ * 域名前部:字母、数字 -> [a-z0-9]+(可重复出现多次)
+ * .: -> \.(点符号需转义)
+ * 域名后部:仅字母(长度为2-4) -> [a-z]{2,4}
+ */
+
+//var sMail = 'mycontactemail@126.com';
+//var sMail = '@126.com';
+//var sMail = 'mycontactemail@_.com';
+var sMail = 'mycontactemail@126.com1';
+//正确的邮箱正则匹配：一般情况下做校验必须加^行首$行尾
+//中文检测范围：[\u4e00-\u9fa5]
+var reg = /^[a-z]([a-z0-9]*[-_]?[a-z0-9]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+[\.][a-z]{2,3}([\.][a-z]{2})?$/ig;
+//var reg = /\w+@[a-z0-9]+\.[a-z]{2,4}/ig;
+alert(reg.test(sMail));
+</script>
+</head>
+<body>
+<div>
+	<p>我是第1个</p>
+	<p>我是第2个</p>
+	<p>我是第3个</p>
+	<p>我是第4个</p>
+</div>
+</body>
+</html>

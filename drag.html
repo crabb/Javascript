@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Drag</title>
+<style type="text/css">
+#div1{
+    width: 100px;
+    height: 100px;
+    background-color: red;
+    position: absolute;
+}
+
+.dashdiv{
+	position: absolute;
+	border: 1px dashed black;
+}
+</style>
+<!--<script type="text/javascript" src="jquery.js"></script>-->
+<script type="text/javascript" src="scripts/addLoadEvent.js"></script>
+<script type="text/javascript" src="scripts/cookies.js"></script>
+<script type="text/javascript" src="scripts/drag.js"></script>
+<script type="text/javascript">
+window.onload = function()
+{
+	var oDiv = document.getElementById('div1');
+	drag(oDiv);
+};
+</script>
+</head>
+<body>
+	<div id="div1"></div>
+    <div id="div3">abcdefg</div>
+</body>
+</html>

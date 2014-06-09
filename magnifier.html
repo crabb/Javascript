@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Magnifier</title>
+<!--<link rel="stylesheet" href="#" media="screen" />-->
+<style type="text/css">
+#div1{
+	width: 200px;
+	height: 200px;
+	padding: 5px;
+	border: 1px solid #ccc;
+	position: relative;
+}
+#div1 .small_pic{
+	width: 200px;
+	height: 200px;
+	background: #eee;
+	position: relative;
+}
+#div1 .small_pic img{
+	width: 200px;
+	height: 200px;
+}
+#div1 .float_layer{
+	width: 50px;
+	height: 50px;
+	top: 0;
+	left: 0;
+	display: none;
+	background: #fff;
+	border: 1px solid #eee;
+	filter: alpha(opacity: 80);
+	opacity: 0.8;
+	position: absolute;
+}
+#div1 .mark{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: red;
+	opacity: 0;
+	filter: alpha(opacity: 0);
+	z-index: 2;
+}
+#div1 .big_pic{
+	width: 250px;
+	height: 250px;
+	border: 2px solid #ccc;
+	position: absolute;
+	top: -1px;
+	left: 215px;
+	overflow: hidden;
+	display: none;
+}
+#div1 .big_pic img{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+function getByClass(oParn, sClass)
+{
+	var oParent = oParn || document;
+	var aElems = oParent.getElementsByTagName('*');
+	var aResult = [];
+	//添加正则完全匹配类名
+	var reg = new RegExp('\\b' + sClass + '\\b');
+	for(var i = 0, len = aElems.length; i < len; i++)
+	{
+//		if(aElems[i].className == sClass)
+		if(reg.test(aElems[i].className))
+		{
+			aResult.push(aElems[i]);
+		}
+	}
+	return aResult;
+}
+
+window.onload = function()
+{
+	var oDiv = document.getElementById('div1');
+	var oMark = getByClass(oDiv, 'mark')[0];
+	var oFloat = getByClass(oDiv, 'float_layer')[0];
+	var oBig = getByClass(oDiv, 'big_pic')[0];
+	var oSmall = getByClass(oDiv, 'small_pic')[0];
+	var oImg = oBig.getElementsByTagName('img')[0];
+	
+	oMark.onmouseover = function()
+	{
+		oFloat.style.display = 'block';
+		oBig.style.display = 'block'
+	};
+	oMark.onmouseout = function()
+	{
+		oFloat.style.display = 'none';
+		oBig.style.display = 'none';
+	};
+	
+	oMark.onmousemove = function(ev)
+	{
+		var oEvent = ev || event;
+		var l = oEvent.clientX - oDiv.offsetLeft - oSmall.offsetLeft - oFloat.offsetWidth / 2;
+		var t = oEvent.clientY - oDiv.offsetTop - oSmall.offsetTop - oFloat.offsetHeight / 2;
+		if(l < 0)
+		{
+			l = 0;
+		}
+		else if(l > oMark.offsetWidth - oFloat.offsetWidth)
+		{
+			l = oMark.offsetWidth - oFloat.offsetWidth;
+		}
+		if(t < 0)
+		{
+			t = 0;
+		}
+		else if(t > oMark.offsetHeight - oFloat.offsetHeight)
+		{
+			t = oMark.offsetHeight - oFloat.offsetHeight;
+		}
+		
+		oFloat.style.left = l + 'px';
+		oFloat.style.top = t + 'px';
+		
+		var percentX = l / (oMark.offsetWidth - oFloat.offsetWidth);
+		var percentY = t / (oMark.offsetHeight - oFloat.offsetHeight);
+		console.log(percentX + '|' + percentY);
+		oImg.style.left = -percentX * (oImg.offsetWidth - oBig.offsetWidth + 4) + 'px';
+		oImg.style.top = -percentY * (oImg.offsetHeight - oBig.offsetHeight + 4) + 'px';
+	};
+};
+
+</script>
+</head>
+<body>
+<div id="div1">
+	<div class="small_pic">
+		<span class="float_layer"></span>
+		<span class="mark"></span>
+		<img src="images/myicon.jpg" alt="myicon" />
+	</div>
+	<div class="big_pic">
+		<img src="images/myicon.jpg" alt="myicon" />
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Iframe Operation</title>
+<!--<link rel="stylesheet" href="#" media="screen" />-->
+<style type="text/css">
+
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+window.onload = function()
+{
+	var doc = document;
+	var oInp = doc.getElementById('inp');
+	var oIframe = doc.getElementById('iframe1');
+	/*
+	 * 操作iframe元素
+	 */
+	oInp.onclick = function()
+	{
+		//contentWindow对象被所有主流浏览器支持
+		oIframe.contentWindow.document.getElementById('iframeRes').style.color = 'red';
+	};
+	
+	oInp.onmouseover = function()
+	{
+		//contentDocument对象不支持IE6.7
+		oIframe.contentDocument.getElementById('iframeRes').style.backgroundColor = 'green';
+	};
+	oInp.onmouseout = function()
+	{
+		//contentDocument对象不支持IE6.7
+		oIframe.contentDocument.getElementById('iframeRes').style.backgroundColor = '';
+	};
+};
+</script>
+</head>
+<body>
+<input type="button" id="inp" value="changeIframe" />
+<iframe src="./iframeRes.html" frameborder="0" id="iframe1"></iframe>
+<div id="parentDiv">Parent Contents</div>
+</body>
+</html>

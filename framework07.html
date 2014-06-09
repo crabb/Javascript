@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Framework07 多物体任意值运动框架</title>
+<style type="text/css">
+	div.opacity{
+		width: 100px;
+		height: 50px;
+		background: red;
+		border: 2px solid black;
+		margin-top: 10px;
+		filter: alpha(opacity: 30);
+		opacity: 0.3;
+	}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript" src="./scripts/addLoadEvent.js"></script>
+<script type="text/javascript">
+//为获取"非行间样式"封装getStyle函数
+/*
+ * parms:
+ * obj：须获取属性的对象
+ * attr：须获取什么属性
+ * notice：用getStyle方法完全为了避免使用offsetWidth/Height/Left/Right所出现的
+ * 包括外边距的bug
+ */
+function getStyle(obj, attr)
+{
+	if(obj.currentStyle)
+	{
+		return obj.currentStyle[attr];
+	}
+	else
+	{
+		//getComputedStyle()为获取非行间样式函数
+		return getComputedStyle(obj, false)[attr];
+	}
+}
+
+window.onload = function()
+{
+	var aDiv = document.getElementsByTagName('div');
+	
+	for(var i=0, len = aDiv.length; i < len; i++)
+	{
+		aDiv[i].timer = null;
+		aDiv[i].alpha = 30;
+		aDiv[i].onmouseover = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 300);
+		};
+		
+		aDiv[i].onmouseout = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 100);
+		};
+	}
+	
+};
+//	var timer = null;
+//	var alpha = 30;
+function elemsMotion(obj, iTarget)
+{
+	/*
+	 * BUG1:
+	 * 传参加一个obj，为指明当前须运动的是哪个物体，
+	 * 多物体运动会造成多个物体抢用一个定时器的bug，
+	 * 解决办法：为每个物体自定义一个定时器aDiv[i].timer = null;
+	 * 清除定时器时改为清除当前物体的定时器clearInterval(obj.timer);
+	 * 重开定时器时改为重开当前物体的定时器timer = setInterval(obj.repeat, 30);
+	 */
+	/*
+	 * BUG2:
+	 * 为避免多个物体的alpha值共用一个全局变量alpha值，
+	 * 须为每个物体增加一个自定义alpha属性obj.alpha
+	 * 
+	 * 总结：
+	 * 多物体运动框架所有属性值不能共用;
+	 * 为物体绑定自己的属性
+	 */
+	clearInterval(obj.timer);
+	var repeat = function()
+	{
+		//用getStyle函数获取当前物体的属性值，代替所有offsetWidth
+		var iCurr = parseInt(getStyle(obj, 'width'));
+		
+		//缓冲运动定义速度并取整
+		var iSpeed = (iTarget - iCurr) / 8;
+		iSpeed = (iSpeed > 0) ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+		
+		if(iCurr == iTarget)
+		{
+			clearInterval(obj.timer);
+		}
+		else
+		{
+			obj.style.width = iCurr + iSpeed + 'px';
+		}
+	};
+	obj.timer = setInterval(repeat, 30);
+}
+</script>
+</head>
+<body>
+<div class="opacity"></div>
+<div class="opacity"></div>
+<div class="opacity"></div>
+<div class="opacity"></div>
+</body>
+</html>

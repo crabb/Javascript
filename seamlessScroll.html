@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>无缝滚动栏</title>
+<style type="text/css">
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	#div1{
+		width:650px;
+		height: 132px;
+		position: relative;
+		margin: 10px auto;
+		border: 1px solid black;
+		overflow: hidden;
+	}
+	#div1 ul{
+		position: absolute;
+		left: 0px;
+	}
+	#div1 ul li{
+		float: left;
+		list-style: none;
+		width: 150px;
+		height: 112px;
+		padding-left: 10px;
+		padding-top: 10px;
+	}
+	#div1 ul li img{
+		width: 150px;
+	}
+</style>
+<script type="text/javascript">
+window.onload = function () {
+	var oDiv = document.getElementById('div1');
+	var oUl = oDiv.getElementsByTagName('ul')[0];
+	var aLi = oUl.getElementsByTagName('li');
+
+	var aA = document.getElementsByTagName('a');
+
+
+	oUl.innerHTML = oUl.innerHTML + oUl.innerHTML;
+	oUl.style.width = aLi.length * aLi[0].offsetWidth + 'px';
+
+	var timer = null;
+	var iSpeed = -5;
+	var repeat = function() {
+		oUl.style.left = oUl.offsetLeft + iSpeed + 'px';
+
+		if(oUl.offsetLeft < -oUl.offsetWidth / 2) {
+			oUl.style.left =  0 + 'px';
+			console.log(oUl.style.left);
+		} else if (oUl.offsetLeft >= 0) {
+			oUl.style.left = -oUl.offsetWidth / 2 + 'px';
+			console.log(oUl.style.left);
+		}
+	};
+
+	aA[0].onclick = function () {
+		iSpeed = -5;
+	};
+	aA[1].onclick = function () {
+		iSpeed = 5;
+	};
+
+	oDiv.onmouseover = function () {
+		clearInterval(timer);
+	};
+	oDiv.onmouseout = function () {
+		timer = setInterval(repeat, 30);
+	};
+
+	timer = setInterval(repeat, 30);
+
+};
+</script>
+</head>
+<body>
+<a href="javascript:;">left</a>
+<a href="javascript:;">right</a>
+<div id="div1">
+	<ul>
+		<li><img src="./images/imgscale/1.jpg" /></li>
+		<li><img src="./images/imgscale/2.jpg" /></li>
+		<li><img src="./images/imgscale/3.jpg" /></li>
+		<li><img src="./images/imgscale/4.jpg" /></li>
+		<li><img src="./images/imgscale/4.jpg" /></li>
+	</ul>
+</div>
+</body>
+</html>

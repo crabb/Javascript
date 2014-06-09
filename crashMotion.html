@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>crash motion碰撞运动</title>
+<style type="text/css">
+#div{
+	width: 100px;
+	height: 100px;
+	background: #abcdef;
+	position: absolute;
+}
+div{
+	width: 3px;
+	height: 3px;
+	background: #CCC;
+	position: absolute;
+}
+</style>
+<script type="text/javascript">
+window.onload = function()
+{
+	var oDiv = document.getElementById('div');
+	var lastX = 0;
+	var lastY = 0;
+	
+	oDiv.onmousedown = function(ev)
+	{
+		var oEvent = ev || event;
+		var disX = oEvent.clientX - oDiv.offsetLeft;
+		var disY = oEvent.clientY - oDiv.offsetTop;
+		var dl = document.documentElement.clientWidth;
+        var dt = document.documentElement.clientHeight;
+		
+		document.onmousemove = function(ev)
+		{
+			var oEvent = ev || event;
+			var l = oEvent.clientX - disX;
+			var t = oEvent.clientY - disY;
+			
+			if(l < 0)
+            {
+                l = 0;
+            }
+            else if(l > dl - oDiv.offsetWidth)
+            {
+                l = dl - oDiv.offsetWidth;
+            }
+            
+            if(t < 0)
+            {
+                t = 0;
+            }
+            else if(t > dt - oDiv.offsetHeight)
+            {
+                t = dt - oDiv.offsetHeight;
+            }
+			
+			oDiv.style.left = l + 'px';
+			oDiv.style.top = t + 'px';
+			
+			//计算当前点与点间的步速值
+			iStepX = l - lastX;
+			iStepY = t - lastY;
+			
+			//更新最新值
+			lastX = l;
+			lastY = t;
+			
+			var oTinyBox = document.createElement('div');
+			oTinyBox.style.left = l + 'px';
+			oTinyBox.style.top = t + 'px';
+			document.body.appendChild(oTinyBox);
+		};
+		
+		document.onmouseup = function()
+		{
+			document.onmousemove = null;
+			document.onmouseup = null;
+			elemsMotion();
+		};
+		clearInterval(timer);
+		return false;
+	};
+};
+var timer = null;
+var iStepX = 50;
+var iStepY = 0;
+function elemsMotion()
+{
+	clearInterval(timer);
+	
+	timer = setInterval(function()
+	{
+		var oDiv = document.getElementById('div');
+		
+		//定义重力
+		iStepY += 3;
+		
+		var iLeft = oDiv.offsetLeft + iStepX;
+		var iTop = oDiv.offsetTop + iStepY;
+		
+		if(iTop >= document.documentElement.clientHeight - oDiv.offsetHeight)
+		{
+			//定义重力后将步速减速
+			//iStepY *= -1;
+			iStepY *= -0.8;
+			//横向只减慢速度不改变方向
+			iStepX *= 0.8;
+			//防止越出可视区域
+			iTop = document.documentElement.clientHeight - oDiv.offsetHeight;
+		}
+		else if(iTop <= 0)
+		{
+			iStepY *= -1;
+			iStepX *= 0.8;
+			iTop = 0;
+		}
+		
+		if(iLeft >= document.documentElement.clientWidth - oDiv.offsetWidth)
+		{
+			iStepX *= -0.8;
+			iLeft = document.documentElement.clientWidth - oDiv.offsetWidth;
+		}
+		else if(iLeft <= 0)
+		{
+			iStepX *= -0.8;
+			iLeft = 0;
+		}
+		
+		//为避免横向步速值出现负值令style.left因值减少而继续运动，
+		//取横向步速值绝对值少于1或足够小就赋值为0
+		if(Math.abs(iStepX) < 1)
+		{
+			iStepX = 0;
+		}
+		if(Math.abs(iStepY) < 1)
+		{
+			iStepY = 0;
+		}
+		
+		oDiv.style.left = iLeft + 'px';
+		oDiv.style.top = iTop + 'px';
+		document.title = iStepX + ' | ' + iLeft;
+//		txt.value = iStepY + ' | ' + iStepX;
+	}, 30);
+}
+</script>
+</head>
+<body>
+<input type="button" id="inp" value="star move" onclick="elemsMotion();"/>
+<!--<input type="text" id="txt"/>-->
+<div id="div"></div>
+</body>
+</html>

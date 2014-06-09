@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Event Delegate</title>
+<!--<link rel="stylesheet" href="#" media="screen" />-->
+<style type="text/css">
+
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+window.onload = function()
+{
+	var doc = document;
+	var oUl = doc.getElementById('ul');
+	var aLi = oUl.getElementsByTagName('li');
+	var oInp = doc.getElementById('inp');
+	var iNow = 3;
+	/*
+	for(var i = 0, len = aLi.length; i < len; i++)
+	{
+		aLi[i].onclick = function()
+		{
+			alert(this.innerHTML);
+		};
+	}
+	*/
+	
+	//事件委托
+	oUl.onmouseover = function(ev)
+	{
+		//事件源：ie: window.event.srcElement ff.chr: event.target
+		//事件源处理: 因为事件源会触发父级元素，需用nodeName找当前元素下的节点元素
+		var ev = ev || window.event;
+		var target = ev.target || ev.srcElement;
+		//alert(target.innerHTML);
+		//alert(target.nodeName);
+		if(target.nodeName.toLowerCase() == 'li')
+		{
+			target.style.cssText = 'background: red';
+		}
+	};
+	oUl.onmouseout = function(ev)
+	{
+		//事件源：ie: window.event.srcElement ff.chr: event.target
+		var ev = ev || window.event;
+		var target = ev.target || ev.srcElement;
+		//alert(target.innerHTML);
+		if(target.nodeName.toLowerCase() == 'li')
+		{
+			target.style.cssText = 'background: ';
+		}
+	};
+	
+	//使用事件委托后，在同一父级下新增加的元素仍可触发事件
+	oInp.onclick = function()
+	{
+		iNow++;
+		var oLi = doc.createElement('li');
+		oLi.innerHTML = 111 * iNow;
+		oUl.appendChild(oLi);
+	};
+	
+	
+};
+</script>
+</head>
+<body>
+<input type="button" id="inp" value="add"/>
+<ul id="ul">
+	<li>111</li>
+	<li>222</li>
+	<li>333</li>
+</ul>
+</body>
+</html>

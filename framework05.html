@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Framework05 多物体运动框架</title>
+<style type="text/css">
+div.motion{
+	width: 100px;
+	height: 50px;
+	background: #abcdef;
+	margin-top: 10px;
+}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript" src="./scripts/addLoadEvent.js"></script>
+<script type="text/javascript">
+window.onload = function()
+{
+	var aDiv = document.getElementsByTagName('div');
+	
+	for(var i=0, len = aDiv.length; i < len; i++)
+	{
+		aDiv[i].timer = null;
+		aDiv[i].onmouseover = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 300);
+		};
+		
+		aDiv[i].onmouseout = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 100);
+		};
+	}
+	
+};
+//	var timer = null;
+function elemsMotion(obj, iTarget)
+{
+	/*
+	 * BUG1:
+	 * 传参加一个obj，为指明当前须运动的是哪个物体，
+	 * 多物体运动会造成多个物体抢用一个定时器的bug，
+	 * 解决办法：为每个物体自定义一个定时器aDiv[i].timer = null;
+	 * 清除定时器时改为清除当前物体的定时器clearInterval(obj.timer);
+	 * 重开定时器时改为重开当前物体的定时器timer = setInterval(obj.repeat, 30);
+	 */
+	clearInterval(obj.timer);
+	var repeat = function()
+	{
+		//缓冲运动定义速度并取整
+		var iSpeed = (iTarget - obj.offsetWidth) / 8;
+		iSpeed = (iSpeed > 0) ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+		
+		if(obj.offsetWidth == iTarget)
+		{
+			clearInterval(obj.timer);
+		}
+		else
+		{
+			obj.style.width = obj.offsetWidth + iSpeed + 'px';
+		}
+	};
+	obj.timer = setInterval(repeat, 30);
+}
+</script>
+</head>
+<body>
+<div class="motion"></div>
+<div class="motion"></div>
+<div class="motion"></div>
+</body>
+</html>

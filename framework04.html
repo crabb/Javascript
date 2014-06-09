@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Framework04</title>
+		<style type="text/css">
+			#div1 {
+			    width: 100px;
+			    height: 100px;
+			    background: red;
+			    left: 500px;
+			    top: 50px;
+				/* 切记要绝对定位 */
+				position: absolute;
+			}
+			
+			#spn1{
+				width: 1px;
+				height: 300px;
+				background: black;
+				left: 300px;
+				position: absolute;
+			}
+		</style>
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				var oDiv = document.getElementById('div1');
+				var oBtn = document.getElementById('btn1');
+				oBtn.onclick = function()
+				{
+					elemsMotion(300);
+				};
+			};
+			
+			function elemsMotion(iTarget)
+			{
+				var oDiv = document.getElementById('div1');
+				var timer = null;
+				
+				clearInterval(timer);
+				var repeat = function()
+				{
+					//在特定速度数的情况下，offsetLeft值加iSpeed值会出现大于300的情况导致停止运动条件失效，
+					//为解决大数错位问题，将判断条件改为>=
+					//framework1.2.3在iSpeed速度不变情况下做运动，称为匀速运行
+					var iSpeed = 0;
+					
+					if(oDiv.offsetLeft < iTarget)
+					{
+						iSpeed = 7;
+					}
+					else
+					{
+						iSpeed = -7;
+					}
+					
+					//为停止运动判断条件后消除定时器
+					//匀速运动的终止条件：取始点与终点之间距离的绝对值
+					if(Math.abs(oDiv.offsetLeft - iTarget) < 7)		//判断是否到达终点
+					{
+						clearInterval(timer);		//到达终点之后所处理的函数
+						oDiv.style.left = iTarget + 'px'; //关闭定时器后将物体位置直接置为目标点，避免出现误差
+					}
+					else
+					{
+						//运行和停止的处理函数必须分离
+						oDiv.style.left = oDiv.offsetLeft + iSpeed + 'px';		//到达终点之前所处理的函数
+					}
+				};
+				timer = setInterval(repeat, 30);
+			}
+		</script>
+	</head>
+	<body>
+		<input type="button" id="btn1" value="start move" />
+		<div id="div1"></div>
+		<span id="spn1"></span>	
+	</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>blog text post</title>
+<!--<link rel="stylesheet" href="#" media="screen" /-->
+<style type="text/css">
+*{
+	margin: 0;
+	padding: 0;
+}
+
+#div1{
+	width: 400px;
+	height: 150px;
+	margin: 20px auto;
+}
+
+#div1 p{
+	float: right;
+	margin: 0;
+}
+
+#div1 textarea{
+	width: 400px;
+	height: 150px;
+}
+
+#div1 a{
+	width: 50px;
+	height: 30px;
+	font-size: 14px;
+	line-height: 30px;
+	text-align: center;
+	float: right;
+	background: #abcdef;
+	color: #004080;
+}
+
+#div1 a.dis{
+	background: #cccccc;
+	color: #666666;
+}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+//onchange:当光标失去目标时触发一次
+//IE:onpropertychange 连续输入连续触发
+//FF.CHR:oninput
+window.onload = function()
+{
+	var oDiv = document.getElementById('div1');
+	var oP = oDiv.getElementsByTagName('p')[0];
+	var oTxt = oDiv.getElementsByTagName('textarea')[0];
+	var oA = oDiv.getElementsByTagName('a')[0];
+	
+	//浏览器兼容
+	var ie = !-[1,];
+	var bFlag = true;
+	var timer = null;
+	var iNum = 0;
+	
+	oTxt.onfocus = function()
+	{
+		if(bFlag)
+		{
+			oP.innerHTML = '微博发布文字区可输入<span>140</span>字';
+			bFlag = false;
+		}
+	};
+	
+	oTxt.onblur = function()
+	{
+		if(oTxt.value == '')
+		{
+			oP.innerHTML = '微博发布文字区';
+			bFlag = true;
+		}
+	};
+	
+//	oTxt.onchange = function()
+//	{
+//		console.log('a');
+//	};
+	if(ie)
+	{
+		oTxt.onpropertychange = toChange;
+	}
+	else
+	{
+		oTxt.oninput = toChange;
+	}
+	
+	//处理文字效果
+	function toChange()
+	{
+		var num = Math.ceil(getLength(oTxt.value) / 2); 
+		var oSpan = oDiv.getElementsByTagName('span')[0];
+		
+		if(num <= 140)
+		{
+			oSpan.innerHTML = 140 - num;
+			oSpan.style.color = '';
+		}
+		else
+		{
+			oSpan.innerHTML = num - 140;
+			oSpan.style.color = 'red';
+		}
+		
+		if(oTxt.value == '' || num > 140)
+		{
+			oA.className = 'dis';
+		}
+		else
+		{
+			oA.className = '';
+		}
+	}
+	
+	//统一中英文字符长度的函数
+	function getLength(str)
+	{
+		return String(str).replace('/[^\x00-xff\]/g', 'aa').length;
+	}
+	
+	oA.onclick = function()
+	{
+		if(this.className == 'dis')
+		{
+			clearInterval(timer);
+			timer = setInterval(function(){
+				if(iNum == 5)
+				{
+					clearInterval(timer);
+					iNum = 0;
+				}
+				else
+				{
+					iNum++;
+				}
+				
+				if(iNum % 2)
+				{
+					oTxt.style.background = 'red';
+				}
+				else
+				{
+					oTxt.style.background = '';
+				}
+			}, 100);
+		}
+		else
+		{
+			alert('发布成功');
+		}
+	};
+};
+</script>
+</head>
+<body>
+<div id="div1">
+	<p>微博发布文字区</p>
+	<textarea name="blog" id="txt"></textarea>
+	<a class="dis" href="javascript:;">发布</a>
+</div>
+</body>
+</html>

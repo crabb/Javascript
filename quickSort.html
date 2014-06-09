@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Quickly Sort</title>
+<!--<link rel="stylesheet" href="#" media="screen" />-->
+<style type="text/css">
+
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+//求数组中最小值及其下标
+var arr = [32, 17, 55, 87, 1, 29];
+var iMin = 9999999;
+var iMinIndex = -1;
+for(var i = 0; i < arr.length; i++)
+{
+	if(arr[i] < iMin)
+	{
+		iMin = arr[i];
+		iMinIndex = i;
+	}
+}
+//alert(iMin + ' | ' + iMinIndex);
+
+//变量值互换
+var vA = 12;
+var vB = 11;
+var tmp;
+tmp = vA;
+vA = vB;
+vB = tmp;
+//alert('a: ' + vA + ' b: ' + vB);
+
+function quickSort(arr)
+{
+	console.profile();
+	if(arr.length <= 1)
+	{
+		return arr;
+	}
+	
+	//取数组中间值位置
+	var midNum = Math.floor(arr.length / 2);
+	
+	//取数组中间点之值
+	var numValue = arr.splice(midNum, 1);
+	
+	//定义左右两侧之空数组
+	var leftArr = [];
+	var rightArr = [];
+	
+	for(var i = 0, len = arr.length; i < len; i++)
+	{
+		console.trace();
+		if(arr[i] < numValue)
+		{
+			leftArr.push(arr[i]);
+		}
+		else
+		{
+			rightArr.push(arr[i]);
+		}
+	}
+	return quickSort(leftArr).concat([numValue], quickSort(rightArr));
+}
+console.log(quickSort(arr));
+</script>
+</head>
+<body>
+
+</body>
+</html>

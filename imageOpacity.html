@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Image opacity fade</title>
+<style type="text/css">
+	#img{
+		width:300px;
+		height:300px;
+		filter:alpha(opacity: 30);
+		opacity: 0.3;
+	}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+	window.onload = function ()
+	{
+		var oImg = document.getElementById('img');
+		oImg.onmouseover = function ()
+		{
+			elemsMotion(100);
+		}
+		oImg.onmouseout = function()
+		{
+			elemsMotion(30);
+		}
+	}
+	var timer = null;
+	var alpha = 30;
+	function elemsMotion(iTarget)
+	{
+		var oImg = document.getElementById('img');
+		
+		clearInterval(timer);
+		var repeat = function ()
+		{
+			var iSpeed = 0;
+			/*
+			 * offsetAlpah为不存在的属性，须自定义一个alpha变量储存透明值
+			 */
+			//if(oImg.offsetAlpha < iTarget)
+			if(alpha < iTarget)
+			{
+				iSpeed = 10;
+			}
+			else
+			{
+				iSpeed = -10;
+			}
+			
+			if(alpha == iTarget)
+			{
+				clearInterval(timer);
+			}
+			else
+			{
+				//计算alpha值
+				alpha = alpha + iSpeed;
+				//为兼容IE | FF必须为透明两种形式赋值
+				oImg.style.filter = 'alpha(opacity:' + alpha + ')';
+				oImg.style.opacity = alpha / 100;
+			}
+		};
+		timer = setInterval(repeat, 30);
+	}
+</script>
+</head>
+<body>
+	<img id="img" src="images/myicon.jpg" alt="my icon" />
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>仿FLASH的图片轮换效果</title>
+<link rel="stylesheet" type="text/css" href="./styles/flashimage.css" />
+<script type="text/javascript" src="scripts/elemsMotion.js"></script>
+<script type="text/javascript">
+window.onload = function()
+{
+	var oDiv = document.getElementById('playimages');
+	var oBtnPrev = getByClass(oDiv, 'prev')[0];
+	var oBtnNext = getByClass(oDiv, 'next')[0];
+	var oMarkLeft = getByClass(oDiv, 'mark_left')[0];
+	var oMarkRight = getByClass(oDiv, 'mark_right')[0];
+	
+	var oSmallUl = getByClass(oDiv, 'small_pic')[0].getElementsByTagName('ul')[0];
+	var aSmallLi = oSmallUl.getElementsByTagName('li');
+	var oBigUl = getByClass(oDiv, 'big_pic')[0];
+	var aBigLi = oBigUl.getElementsByTagName('li');
+	var iNow = 0;
+	var iMinZindex = 2;
+	
+	//底部UL总宽为包含在其内的　LI的总数 * 一个LI的宽度
+	oSmallUl.style.width = aSmallLi.length * aSmallLi[0].offsetWidth + 'px';
+	
+	oBtnPrev.onmouseover = oMarkLeft.onmouseover = function()
+	{
+		elemsMotion(oBtnPrev, 'opacity', 100);
+	};
+	oBtnPrev.onmouseout = oMarkLeft.onmouseout = function()
+	{
+		elemsMotion(oBtnPrev, 'opacity', 0);
+	};
+	
+	oBtnNext.onmouseover = oMarkRight.onmouseover = function()
+	{
+		elemsMotion(oBtnNext, 'opacity', 100);
+	};
+	oBtnNext.onmouseout = oMarkRight.onmouseout = function()
+	{
+		elemsMotion(oBtnNext, 'opacity', 0);
+	};
+	
+	for(var i = 0, len = aSmallLi.length; i < len; i++)
+	{
+		aSmallLi[i].index = i;
+		aSmallLi[i].onmouseover = function()
+		{
+			elemsMotion(this, 'opacity', 100);
+		};
+		aSmallLi[i].onmouseout = function()
+		{
+			if(this.index != iNow)
+			{
+				elemsMotion(this, 'opacity', 60);
+			}
+		};
+		aSmallLi[i].onclick = function()
+		{
+			//避免重覆点当前aSmallLi导致oBigUl再向下拉
+			if(this.index == iNow) return;
+			
+			iNow = this.index;
+			tab();
+		};
+		
+		function tab()
+		{
+			for(var i = 0, len = aSmallLi.length;i < len; i++)
+			{
+				elemsMotion(aSmallLi[iNow], 'opacity', 60);
+			}
+			elemsMotion(aSmallLi[iNow], 'opacity', 100);
+			
+			//改变大图图层顺序使之可见
+			aBigLi[iNow].style.zIndex = iMinZindex++;
+			//将大图的高度置为0，准备拉伸
+			aBigLi[iNow].style.height = 0;
+			//以大图UL的高度为准，将大图高度从0运动至大图UL高度
+			elemsMotion(aBigLi[iNow], 'height', oBigUl.offsetHeight);
+			
+			//判断最左边第0张图的位置
+			if(iNow == 0)
+			{
+				elemsMotion(oSmallUl, 'left', 0);
+			}
+			else if(iNow == aSmallLi.length - 1)
+			{
+				elemsMotion(oSmallUl, 'left', -(iNow - 2) * aSmallLi[0].offsetWidth);
+			}
+			else
+			{
+				//底部缩略图向左移动公式：(向左移为负)总图数-1 * 一个LI的宽度
+				elemsMotion(oSmallUl, 'left', -(iNow - 1) * aSmallLi[0].offsetWidth);
+			}
+		}
+		
+		oBtnPrev.onclick = function()
+		{
+			iNow--;
+			if(iNow == -1)
+			{
+				iNow = aSmallLi.length - 1;
+			}
+			tab();
+		};
+		oBtnNext.onclick = function()
+		{
+			iNow++;
+			if(iNow == aSmallLi.length)
+			{
+				iNow = 0;
+			}
+			tab();
+		};
+	}
+};
+</script>
+</head>
+<body>
+<div id="playimages" class="play">
+    <ul class="big_pic">
+		<div class="prev"></div>
+		<div class="next"></div>
+
+		<div class="text">加载图片说明……</div>
+		<div class="length">计算图片数量……</div>
+		
+		<a class="mark_left" href="javascript:;"></a>
+		<a class="mark_right" href="javascript:;"></a>
+		<div class="bg"></div>
+		
+        <li style="z-index:1;"><img src="images/imgwheel/1.jpg" /></li>
+        <li><img src="images/imgwheel/2.jpg" /></li>
+        <li><img src="images/imgwheel/3.jpg" /></li>
+        <li><img src="images/imgwheel/4.jpg" /></li>
+        <li><img src="images/imgwheel/5.jpg" /></li>
+        <li><img src="images/imgwheel/6.jpg" /></li>
+    </ul>
+    <div class="small_pic">
+        <ul style="width:390px;">
+            <li style="filter: 100; opacity: 1;"><img src="images/imgwheel/1.jpg" /></li>
+            <li><img src="images/imgwheel/2.jpg" /></li>
+            <li><img src="images/imgwheel/3.jpg" /></li>
+            <li><img src="images/imgwheel/4.jpg" /></li>
+            <li><img src="images/imgwheel/5.jpg" /></li>
+            <li><img src="images/imgwheel/6.jpg" /></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

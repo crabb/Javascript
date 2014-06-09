@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Framework08 多物体任意值运动框架</title>
+<style type="text/css">
+	.opacity{
+		width: 100px;
+		height: 50px;
+		background: red;
+		border: 2px solid black;
+		margin-top: 10px;
+		filter: alpha(opacity: 100);
+		opacity: 1;
+	}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<!-- <script type="text/javascript" src="./scripts/addLoadEvent.js"></script> -->
+<script type="text/javascript">
+window.onload = function()
+{
+	var aDiv = document.getElementsByTagName('div');
+	for(var i=0, len = aDiv.length; i < len; i++)
+	{
+		// aDiv[i].index = i;
+		// aDiv[i].timer = null;
+//			aDiv[i].alpha = 30;
+		aDiv[i].onmouseover = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 'opacity', 30);
+			// alert(parseInt(parseFloat(0.07) * 100));
+		};
+
+		aDiv[i].onmouseout = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 'opacity', 100);
+		};
+		aDiv[i].onmouseover = function()
+		{
+			elemsMotion(this, 'width', 500);
+		};
+		aDiv[i].onmouseover = function()
+		{
+			elemsMotion(this, 'height', 100);
+		};
+		aDiv[i].onmouseover = function()
+		{
+			elemsMotion(this, 'borderWidth', 50);
+		};
+		aDiv[i].onmouseout = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 'borderWidth', 2);
+		};
+	}
+
+};
+
+//为获取"非行间样式"封装getStyle函数
+/*
+ * parms:
+ * obj：须获取属性的对象
+ * attr：须获取什么属性
+ * notice：用getStyle方法完全为了避免使用offsetWidth/Height/Left/Right所出现的
+ * 包括外边距的bug
+ */
+function getStyle(obj, attr)
+{
+	if(obj.currentStyle)
+	{
+		return obj.currentStyle[attr];
+	}
+	else
+	{
+		//getComputedStyle()为获取非行间样式函数
+		return window.getComputedStyle(obj, null)[attr];
+	}
+}
+
+//var timer = null;
+//var alpha = 30;
+//改变传参，添加一个属性参数
+function elemsMotion(obj, attr, iTarget)
+{
+	/*
+	 * BUG1:
+	 * 传参加一个obj，为指明当前须运动的是哪个物体，
+	 * 多物体运动会造成多个物体抢用一个定时器的bug，
+	 * 解决办法：为每个物体自定义一个定时器aDiv[i].timer = null;
+	 * 清除定时器时改为清除当前物体的定时器clearInterval(obj.timer);
+	 * 重开定时器时改为重开当前物体的定时器timer = setInterval(obj.repeat, 30);
+	 */
+	/*
+	 * BUG2:
+	 * 为避免多个物体的alpha值共用一个全局变量alpha值，
+	 * 须为每个物体增加一个自定义alpha属性obj.alpha
+	 *
+	 * 总结：
+	 * 多物体运动框架所有属性值不能共用;
+	 * 为物体绑定自己的属性
+	 */
+	clearInterval(obj.timer);
+	var repeat = function()
+	{
+		/*
+		 * 用getStyle函数获取当前物体的属性值，代替所有offsetWidth
+		 * BUG3:
+		 * iCurr用parseInt取整对于宽高等属性取值不会出问题，但对透明度(0.3)无法取整(0)，
+		 * 为支持透明度做判断条件
+		 */
+		var iCurr = 0;
+		if(attr == 'opacity')
+		{
+			//将处理透明度值改为parseFloat，再*100取整作兼容
+			//为解决小数点后的精确度导致闪烁问题再取整
+			iCurr = parseInt(parseFloat(getStyle(obj, attr)) * 100);
+		}
+		else
+		{
+			iCurr = parseInt(getStyle(obj, attr));
+		}
+
+		//缓冲运动定义速度并取整
+		var iSpeed = (iTarget - iCurr) / 8;
+		iSpeed = (iSpeed > 0) ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+
+
+		if(iCurr == iTarget)
+		{
+			clearInterval(obj.timer);
+		}
+		else
+		{
+			//为透明度处理作判断条件
+			if(attr == 'opacity')
+			{
+				obj.style.filter = 'alpha(opacity: ' + (iCurr + iSpeed) + ')';
+				obj.style.opacity = (iCurr + iSpeed) / 100;
+
+				//解决闪烁问题：小数点后的精确度问题
+				document.getElementById('txt').value = obj.style.opacity;
+			}
+			else
+			{
+				obj.style[attr] = iCurr + iSpeed + 'px';
+			}
+		}
+	};
+	obj.timer = setInterval(repeat, 30);
+}
+</script>
+</head>
+<body>
+<input id="txt" type="text" />
+<div class="opacity"></div>
+<div class="opacity"></div>
+<div class="opacity"></div>
+<div class="opacity"></div>
+</body>
+</html>

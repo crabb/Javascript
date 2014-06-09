@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>滑动菜单-弹性运动</title>
+<style type="text/css">
+*{
+	margin: 0;
+	padding: 0;
+}
+#ul{
+	width: 400px;
+	height: 30px;
+	position: relative;
+	margin: 100px auto;
+	overflow: hidden;
+}
+li{
+	list-style: none;
+	float: left;
+	width: 98px;
+	height: 28px;
+	line-height: 28px;
+	/* border: 1px solid #ccc; */
+	text-align: center;
+	text-decoration: underline;
+	z-index: 2;
+	position: relative;
+}
+.bg{
+	background: red;
+	width: 100px;
+	height: 5px;
+	overflow: hidden;
+	border: none;
+	position: absolute;
+	top: 24px;
+	left: 0;
+	z-index: 1;
+}
+</style>
+<script type="text/javascript">
+window.onload = function()
+{
+	var oUl = document.getElementById('ul');
+	var aLi = oUl.getElementsByTagName('li');
+	var oBg = aLi[aLi.length - 1];
+	
+	//最后一个oBg不需要加事件，所以用aLi.length-1跳过
+	for(var i = 0, len = aLi.length -1; i < len; i++)
+	{
+		aLi[i].onmouseover = function()
+		{
+			elemsMotion(oBg, this.offsetLeft);
+		};
+	}
+};
+//为保持每次运动后的步速值，iStep不可放入repeat中
+var iStep = 0;
+var left = 0;
+function elemsMotion(obj, iTarget)
+{
+	if(obj.timer)
+	{
+		clearInterval(obj.timer);
+	}
+	
+	var repeat = function()
+	{
+		//弹性运动速度
+		iStep += (iTarget - obj.offsetLeft) / 5;
+		//定义摩擦力
+		iStep *= 0.7;
+		
+		/* 由于物体在样式中的left值只能接受整数，所以每次摩擦值都会出现累积误差，
+		 * 不可用速度取整的方法，因为速度取整后与obj.offsetLeft相加仍存在被取整后的误差，
+		 * 将会使obj.offsetLeft值左右抖动
+		 * 解决：自定义left值后，保证每次left值与iStep值相加后保留误差再赋给offsetLeft
+		 */
+//		obj.style.left = obj.offsetLeft + iStep + 'px';
+		left = left + iStep;
+		
+		//if(obj.offsetLeft == iTarget)
+		//用绝对值判断终止条件以致关闭停时器
+		if(Math.abs(iStep) < 1 && Math.abs(left - iTarget) < 1)
+		//不用绝对值判断终止条件以致关闭停时器
+		//if(obj.offsetLeft == iTarget)
+		{
+			clearInterval(obj.timer);
+			//如果用绝对值判断，最后的误差需要将物体的left值直接等于iTarget值
+			obj.style.left = iTarget + 'px';
+		}
+		else
+		{
+			obj.style.left = left + 'px';
+		}
+		document.title = obj.offsetLeft + ' | ' + iTarget + ' | ' + left;
+	};
+	
+	obj.timer = setInterval(repeat, 30);
+}
+</script>
+</head>
+<body>
+<ul id="ul">
+	<li>Index</li>
+	<li>Product</li>
+	<li>Info</li>
+	<li>About</li>
+	<li class="bg"></li>
+</ul>
+</body>
+</html>

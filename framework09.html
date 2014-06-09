@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Framework09 多物体任意值同时运动框架</title>
+<style type="text/css">
+	/* #div1{
+		width: 100px;
+		height: 100px;
+		background: red;
+		filter: alpha(opacity: 0);
+		opacity: 0;
+	} */
+	*{
+		margin: 0;
+		padding: 0;
+	}
+	#ul{
+		z-index:9;
+	}
+	#ul li{
+		width: 100px;
+		height: 20px;
+		text-align: center;
+		line-height: 20px;
+		position: relative;
+		float: left;
+		background: #808080;
+		list-style: none;
+		border: solid 1px #004040;
+		border-left: 0px;
+	}
+	#ul li div{
+		background: #c0c0c0;
+		overflow: hidden;
+		height: 0px;
+		width: 100%;
+		top: 20px;
+		position: absolute;
+		filter: alpha(opacity: 0);
+		opacity: 0;
+		z-index: -1;
+	}
+</style>
+<script type="text/javascript" src="./scripts/elemsMotion_json.js"></script>
+<!-- <script type="text/javascript">
+	window.onload = function()
+	{
+		oBtn = document.getElementById('inp');
+		oDiv = document.getElementById('div1');
+		
+		oBtn.onclick = function()
+		{
+			elemsMotion(oDiv, {width:200, height:200, opacity: 100});
+		};
+	};
+</script> -->
+<script type="text/javascript">
+window.onload = function()
+{
+	var oUl = document.getElementById('ul');
+	var aLi = oUl.getElementsByTagName('li');
+	var timer = null;
+//	var j = ['a', 'b', function(){}];
+//	alert(j[2]);return;
+	
+	for(var i = 0, len = aLi.length; i < len; i++)
+	{
+		aLi[i].onmouseover = function()
+		{
+			//取“当前”Li的第一个div元素
+			var oDiv = this.getElementsByTagName('div')[0];
+			
+			/* 确定当前div的高度：先设置自适应，将自适应后的offsetHeight存为一个变量值，
+			 * 设置height值为0，等于让div的高度从0开始运动，
+			 * 将offsetHeight变量值应用到运动框架中
+			 */
+			oDiv.style.height = 'auto';
+			var iHeight = oDiv.offsetHeight;
+			oDiv.style.height = 0;
+			elemsMotion(oDiv, {opacity: 100, height: iHeight, background: 'red'});
+		};
+		
+		aLi[i].onmouseout = function()
+		{
+			//取“当前”Li的第一个div元素
+			var oDiv = this.getElementsByTagName('div')[0];
+			elemsMotion(oDiv, {opacity: 0, height: 0, background: '#CCC'});
+		};
+	}
+};
+</script>
+</head>
+<body>
+<!-- <input id="inp" type="button" value="start move" /> -->
+<!-- <div id="div1"></div> -->
+<ul id="ul">
+	<li>List 1
+		<div>div test 1<br />div test 2<br />div test 3<br />div test 4<br /></div></li>
+	<li>List 2
+		<div>div test 1<br />div test 2<br />div test 3<br />div test 4<br /></div></li>
+	<li>List 3
+		<div>div test 1<br />div test 2<br />div test 3<br />div test 4<br /></div></li>
+</ul>
+</body>
+</html>

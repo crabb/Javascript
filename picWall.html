@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Picture Wall照片墙</title>
+<style type="text/css">
+*{
+	margin: 0px;
+	padding: 0px;
+}
+
+#ul{
+	width: 660px;
+	position: relative;
+	margin: 10px auto;
+}
+
+#ul li{
+	width: 200px;
+	height: 200px;
+	float: left;
+	margin: 10px;
+	list-style: none;
+	/* position: relative; */
+}
+
+#ul li img{
+	width: 200px;
+	height: 200px;
+}
+
+#ul .active{
+	border: 1px dashed #c0c0c0;
+}
+</style>
+<script type="text/javascript" src="./scripts/elemsMotion_json.js"></script>
+<script type="text/javascript">
+window.onload = function()
+{
+	var oUl = document.getElementById('ul');
+	var aLi = document.getElementsByTagName('li');
+	var aPos = [];
+	var iMiniZindex = 2;
+	
+	//布局转换
+	for(var i = 0, len = aLi.length; i < len; i++)
+	{
+		aPos[i] = {left: aLi[i].offsetLeft, top: aLi[i].offsetTop};
+	}
+	for(var i = 0, len = aLi.length; i < len; i++)
+	{
+		aLi[i].style.left = aPos[i].left + 'px';
+		aLi[i].style.top = aPos[i].top + 'px';
+		
+		aLi[i].style.position = 'absolute';
+		aLi[i].style.margin = '0';
+		//标记aLi的索引值以确定哪个aLi的位置
+		aLi[i].index = i;
+	}
+	
+	//为每个Li添加拖拽事件
+	for(var i = 0, len = aLi.length; i < len; i++)
+	{
+		drag(aLi[i]);
+	}
+	
+	//拖拽函数
+	function drag(obj)
+	{
+		obj.onmousedown = function(ev)
+		{
+			var oEvent = ev || event;
+			obj.style.zIndex = iMiniZindex++;
+			
+			var disX = oEvent.clientX - obj.offsetLeft;
+			var disY = oEvent.clientY - obj.offsetTop;
+			var dl = document.documentElement.clientWidth;
+        	var dt = document.documentElement.clientHeight;
+			
+//			var oNewObj = document.createElement('div');
+//			oNewObj.className = 'dashdiv';
+//			oNewObj.style.left = obj.offsetLeft - 2 + 'px';
+//			oNewObj.style.top = obj.offsetTop -2 + 'px';
+//			oNewObj.style.width = obj.offsetWidth + 'px';
+//			oNewObj.style.height = obj.offsetHeight + 'px';
+			
+			//在页面中插入新div
+//			oUl.appendChild(oNewObj);
+			
+			document.onmousemove = function(ev)
+			{
+				var oEvent = ev || event;
+				var l = oEvent.clientX - disX;
+				var t = oEvent.clientY - disY;
+				
+//				if(l < 0)
+//				{
+//					l = 0;
+//				}
+//				else if(l > (dl - obj.offsetWidth))
+//				{
+//					l = dl;
+//				}
+//				
+//				if(t < 0)
+//				{
+//					t = 0;
+//				}
+//				else if(t > (dl - obj.offsetHeight))
+//				{
+//					t = dl;
+//				}
+				
+				obj.style.left = l + 'px';
+				obj.style.top = t + 'px';
+				
+//				for(var i = 0, len = aLi.length; i < len; i++)
+//				{
+//					//将所有li的active样式置空，检测到碰撞再加active样式
+//					aLi[i].className = '';
+//					
+//					//如果点击当前li则跳过自身与自身的碰撞检测
+//					if(obj == aLi[i]) continue;
+//					if(collisionTest(obj, aLi[i]))
+//					{
+//						aLi[i].className = 'active';
+//					}
+//				}
+				for (var i = 0, len = aLi.length; i < len; i++) 
+				{
+					//将所有li的active样式置空，检测到碰撞再加active样式
+					aLi[i].className = '';
+				}
+				
+				var oNear = getNearest(obj);
+				if(oNear)
+				{
+					oNear.className = 'active';
+				}
+			};
+			
+			document.onmouseup = function()
+			{
+				document.onmousemove = null;
+				document.onmouseup = null;
+				
+				//位置恢复及转换
+				var oNearest = getNearest(obj);
+				if(oNearest)
+				{
+					//如果与某物体碰撞后交换位置，同时将active样式置空，并将级层数递增
+					oNearest.className = '';
+					//可将当前对象的层级数递增亦可将最近物体的级层数递增，前者更合乎视觉习惯
+					obj.style.zIndex = iMiniZindex++;
+//					oNearest.style.zIndex = iMiniZindex++;
+					
+					elemsMotion(oNearest, aPos[obj.index]);
+					elemsMotion(obj, aPos[oNearest.index]);
+					
+					//将互换位置后的两个物体的下标互换
+					var tmp;
+					tmp = obj.index;
+					obj.index = oNearest.index;
+					oNearest.index = tmp;
+				}
+				else
+				{
+					//否则回自身初始位置，aPos[i]原本就是json
+					elemsMotion(obj, aPos[obj.index]);
+					//elemsMotion(obj, {left: aPos[obj.index].left, top: aPos[obj.index].top});
+				}
+			};
+			//鼠标按下即关闭定时器，以免回恢位置前定时器造成抖动
+			clearInterval(obj.timer);
+			//阻止默认事件
+			return false;
+		};
+	}
+	
+	//碰撞测试
+	function collisionTest(obj1, obj2)
+	{
+		var l1 = obj1.offsetLeft;
+		var r1 = obj1.offsetLeft + obj1.offsetWidth;
+		var t1 = obj1.offsetTop;
+		var b1 = obj1.offsetTop + obj1.offsetHeight;
+		
+		var l2 = obj2.offsetLeft;
+		var r2 = obj2.offsetLeft + obj2.offsetWidth;
+		var t2 = obj2.offsetTop;
+		var b2 = obj2.offsetTop + obj2.offsetHeight;
+		
+		if(r1 < l2 || l1 > r2 || b1 < t2 || t1 > b2)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	//获取两物体间距离
+	function getDis(obj1, obj2)
+	{
+		var a = obj2.offsetLeft - obj1.offsetLeft;
+		var b = obj2.offsetTop - obj1.offsetTop;
+		return Math.sqrt(a * a + b * b);
+	}
+	
+	//获取两物体间最近距离
+	function getNearest(obj)
+	{
+		var iMin = 9999999;
+		var iMinIndex = -1;
+		for(var i = 0, len = aLi.length; i < len; i++)
+		{
+			if(obj == aLi[i])
+			{
+				continue;
+			}
+			
+			if(collisionTest(obj, aLi[i]))
+			{
+				var dis = getDis(obj, aLi[i]);
+				if(iMin > dis)
+				{
+					iMin = dis;
+					iMinIndex = i;
+				}
+			}
+		}
+		
+		if(iMinIndex == -1)
+		{
+			return null;
+		}
+		else
+		{
+			return aLi[iMinIndex];
+		}
+	}
+	
+};
+
+//求数组中最小值及其下标
+var arr = [32, 17, 55, 87, 1, 29];
+var iMin = 9999999;
+var iMinIndex = -1;
+for(var i = 0; i < arr.length; i++)
+{
+	if(arr[i] < iMin)
+	{
+		iMin = arr[i];
+		iMinIndex = i;
+	}
+}
+//alert(iMin + ' | ' + iMinIndex);
+
+//变量值互换
+var vA = 12;
+var vB = 11;
+var tmp;
+tmp = vA;
+vA = vB;
+vB = tmp;
+//alert('a: ' + vA + ' b: ' + vB);
+</script>
+</head>
+<body>
+<ul id="ul">
+	<li><img src="./images/picwall/10000.1510081.png" /></li>
+	<li><img src="./images/picwall/10000.1515036.png" /></li>
+	<li><img src="./images/picwall/10000.1541345.png" /></li>
+	<li><img src="./images/picwall/10000.1564068.png" /></li>
+	<li><img src="./images/picwall/10000.1578226.png" /></li>
+	<li><img src="./images/picwall/10000.1595337.png" /></li>
+	<li><img src="./images/picwall/10000.1607882.png" /></li>
+	<li><img src="./images/picwall/10000.1621272.png" /></li>
+	<li><img src="./images/picwall/10000.1642557.png" /></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>运动框架实例：分享到</title>
+		<!--<link rel="stylesheet" href="#" media="screen" />-->
+		<style type="text/css">
+			#div1 {
+			    width: 100px;
+			    height: 200px;
+			    background: #ccc;
+			    position: absolute;
+			    left: -100px;
+			}
+			
+			#div1 span {
+			    width: 20px;
+			    height: 70px;
+			    background: yellow;
+				position: absolute;
+				left: 100px;
+				top: 65px;
+				line-height:23px;
+				text-align:center;
+			}
+		</style>
+		<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+		<script type="text/javascript">
+			window.onload = function ()
+			{
+				var oDiv = document.getElementById('div1');
+				
+				oDiv.onmouseover = function ()
+				{
+					elemsMotion();
+				};
+				oDiv.onmouseout = function ()
+				{
+					elemsMotion2();
+				};
+			};
+			
+				//定义定时器
+				var timer = null;
+				
+				//运动框架
+				function elemsMotion()
+				{
+					var oDiv = document.getElementById('div1');
+					//首先清除定时器
+					clearInterval(timer);
+					
+					//重开定时器
+					var repeat = function ()
+					{
+						var iSpeed = 10;
+						if(oDiv.offsetLeft == 0)
+						{
+							clearInterval(timer);
+						}
+						else
+						{
+							oDiv.style.left = oDiv.offsetLeft + iSpeed + 'px';
+						}
+					};
+					timer = setInterval(repeat, 30);
+				}
+				
+				function elemsMotion2()
+				{
+					var oDiv = document.getElementById('div1');
+					//首先清除定时器
+					clearInterval(timer);
+					
+					//重开定时器
+					var repeat = function ()
+					{
+						var iSpeed = -10;
+						if(oDiv.offsetLeft == -100)
+						{
+							clearInterval(timer);
+						}
+						else
+						{
+							oDiv.style.left = oDiv.offsetLeft + iSpeed + 'px';
+						}
+					};
+					timer = setInterval(repeat, 30);
+				}
+				//完成初步功能
+		</script>
+	</head>
+	<body>
+		<div id="div1">
+			<span>
+				分享到
+			</span>
+		</div>
+	</body>
+</html>

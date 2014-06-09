@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Navigation Bar导航图标菜单</title>
+<style type="text/css">
+body{
+	margin: 0;
+}
+
+#div{
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	text-align: center;
+}
+</style>
+<script type="text/javascript">
+	/*
+	 * 重点：计算鼠标与图片间的距离用勾三股四弦五定理
+	 * c² = a² + b²
+	 * c = sqrt(a² + b²)
+	 * a = x2 - x1(x1可为鼠标在页面中的clientX)
+	 * b = y2 - y1(y1可为鼠标在页面中的clientY)
+	 */
+document.onmousemove = function(ev)
+{
+	var oEvent = ev || event;
+	var oDiv = document.getElementById('div');
+	var aInpTxt = document.getElementsByTagName('input');
+	var aImg = document.getElementsByTagName('img');
+	
+	for(var i =0, len = aInpTxt.length; i < len; i++)
+	{
+		//计算图片中心点与页面顶部距离
+		var x = aImg[i].offsetLeft + aImg[i].offsetWidth / 2;
+		var y = aImg[i].offsetTop + oDiv.offsetTop + aImg[i].offsetHeight / 2;
+//		aInpTxt[i].value = 'x: ' + x + ' y: ' + y;
+		
+		var a = x - oEvent.clientX;
+		var b = y - oEvent.clientY;
+		
+		//变态写法：求a的2次幂:Math.pow(a, 2)
+		//var dis = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+		//计算鼠标与图片中心距离
+		var dis = Math.sqrt(a * a + b * b);
+//		aInpTxt[i].value = parseInt(dis);
+
+		//计算上向曲线比例，比例参数300可改，值越大对距离越不敏感，图片将会同时放大缩细，值越小相对于接近自身的缩放
+		var scale = 1 - dis / 350;
+		
+		//限制比例不可少于一半
+		if(scale < 0.5)
+		{
+			scale = 0.5;
+		}
+		
+		//用比例数乘以图片原始宽度
+		aImg[i].width = scale * 150;
+		
+		aInpTxt[i].value = scale.toFixed(2);
+	}
+};
+</script>
+</head>
+<body>
+<input type="text" />
+<input type="text" />
+<input type="text" />
+<input type="text" />
+<input type="text" />
+<div id="div">
+	<img src="./images/picwall/10000.1510081.png" width="75"/>
+	<img src="./images/picwall/10000.1515036.png" width="75"/>
+	<img src="./images/picwall/10000.1541345.png" width="75"/>
+	<img src="./images/picwall/10000.1564068.png" width="75"/>
+	<img src="./images/picwall/10000.1578226.png" width="75"/>
+</div>
+</body>
+</html>

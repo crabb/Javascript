@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DOM Optimize</title>
+<!--<link rel="stylesheet" href="#" media="screen" />-->
+<style type="text/css">
+
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+window.onload = function()
+{
+	var str1 = '';
+	var oDiv = document.getElementById('div');
+	var oUl = document.getElementById('ul');
+	
+	console.time('innerHTML');
+	for(var i = 0; i < 5000; i++)
+	{
+		oDiv.innerHTML += 'a';
+	}
+	console.timeEnd('innerHTML');
+	
+	console.time('str');
+	for(var i = 0; i < 5000; i++)
+	{
+		str1 += 'a';
+	}
+	oDiv.innerHTML = str1;
+	console.timeEnd('str');
+	
+	console.time('appendChild');
+	for(var i = 0; i < 5000; i++)
+	{
+		var oLi = document.createElement('li');
+		oUl.appendChild(oLi);
+	}
+	console.timeEnd('appendChild');
+	
+	console.time('innerHTML');
+	var str2 = '';
+	for(var i = 0; i < 5000; i++)
+	{
+		str2 += '<li></li>';
+	}
+	oUl.innerHTML = str2;
+	console.timeEnd('innerHTML');
+	
+	//使用cloneNode(true)提高速度
+	console.time('cloneNode');
+	var oLi = document.createElement('li');
+	oLi.innerHTML = 'cloned';
+	for(var i = 0; i < 5000; i++)
+	{
+		var newLi = oLi.cloneNode(true);
+		oUl.appendChild(newLi);
+	}
+	console.timeEnd('cloneNode');
+	
+	//不使用cloneNode(true)提高速度
+	console.time('cloneNode');
+	for(var i = 0; i < 5000; i++)
+	{
+		var oLi = document.createElement('li');
+		oLi.innerHTML = 'cloned';
+		oUl.appendChild(oLi);
+	}
+	console.timeEnd('cloneNode');
+	
+	//for循环使用局部变量
+	console.time('for local variable');
+	var aLi = oUl.getElementsByTagName('li');
+	var str3 = '';
+	for(var i = 0; i < 5000; i++)
+	{
+		var oLi = document.createElement('li');
+	}
+	for(var i = 0, len = aLi.length; i < len; i++)
+	{
+		str3 += 'li';
+		aLi[i].innerHTML = str3;
+		
+		//用cssText减少DOM重排重绘
+		aLi[i].style.cssText = 'width: 100px; height: 100px; background: red;';
+	}
+	console.timeEnd('for local variable');
+	
+	//for循环不使用局部变量
+	console.time('for no local variable');
+	var aLi = oUl.getElementsByTagName('li');
+	for(var i = 0; i < 5000; i++)
+	{
+		var oLi = document.createElement('li');
+	}
+	for(var i = 0; i < aLi.length; i++)
+	{
+		aLi[i].innerHTML = 'li';
+	}
+	console.timeEnd('for no local variable');
+	
+	//获取元素时避免直接用document获取以至频繁操作dom
+	/*
+	 * var oDiv = document.getElementById('div');
+	 * var oUl = document.getElementById('ul');
+	 * var oInput = document.getElementById('input');
+	 * childNodes -> 用children代替
+	 * firstChild -> 用firstElementChild代替
+	 */
+	var doc = document;
+	var oDiv = doc.getElementById('div');
+	var oUl = doc.getElementById('ul');
+	var oInput = doc.getElementById('input');
+	
+	//使用文档碎片
+	var oFrag = doc.createDocumentFragment();
+	console.time('documentFragment');
+	for(var i = 0; i < 5000; i++)
+	{
+		var oLi = doc.createElement('li');
+		oFrag.appendChild(oLi);
+	}
+	oUl.appendChild(oFrag);
+	console.timeEnd('documentFragment');
+	
+};
+</script>
+</head>
+<body>
+<div id="div"></div>
+<ul id="ul"></ul>
+</body>
+</html>

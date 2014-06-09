@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>微博发布框</title>
+<style type="text/css">
+*{
+	margin: 0;
+	padding: 0;
+}
+#div1{
+	width: 350px;
+	height: 300px;
+	border: 1px solid #ccc;
+	overflow: hidden;
+}
+#div1 div{
+	margin: 2px 2px auto;
+	border-bottom: 1px dashed #808080;
+	padding: 2px;
+	overflow: hidden;
+	filter: alpha(opactiy: 0);
+	opacity: 0;
+}
+</style>
+<script type="text/javascript" src="./scripts/elemsMotion_json.js"></script>
+<script type="text/javascript">
+window.onload = function()
+{
+	var oDiv = document.getElementById('div1');
+	var oTxt = document.getElementById('txt');
+	var oBtn = document.getElementById('btn');
+	
+	oBtn.onclick = function(e)
+	{
+		if(!oTxt.value) return;
+		
+		var oTxtDiv = document.createElement('div');
+		var aDiv = oDiv.getElementsByTagName('div');
+		oTxtDiv.innerHTML = oTxt.value;
+		oTxt.value = '';
+		
+		if (aDiv.length) 
+		{
+			oDiv.insertBefore(oTxtDiv, aDiv[0]);
+		}
+		else 
+		{
+			oDiv.appendChild(oTxtDiv);
+		}
+		var iHeight = oTxtDiv.offsetHeight;
+		oTxtDiv.style.height = 0;
+		elemsMotion(oTxtDiv, {height: iHeight}, function()
+		{
+			elemsMotion(oTxtDiv, {opacity: 100});
+		});
+	};
+};
+</script>
+</head>
+<body>
+<textarea id="txt" cols="40" rows="10"></textarea><br />
+<input type="button" id="btn" value="submit"/>
+<div id="div1">
+</div>
+</body>
+</html>

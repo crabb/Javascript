@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Buffer Action</title>
+		<style type="text/css">
+			#div1 {
+			    width: 100px;
+			    height: 100px;
+			    background: red;
+			    left: 500px;
+			    top: 50px;
+				/* 切记要绝对定位 */
+				position: absolute;
+			}
+			#spn1{
+				width: 1px;
+				height: 300px;
+				background: black;
+				left: 300px;
+				position: absolute;
+			}
+		</style>
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				var oBtn = document.getElementById('btn1');
+				oBtn.onclick = function()
+				{
+					elemsMotion(300);
+				};
+			};
+			
+			var timer = null;
+			function elemsMotion(iTarget)
+			{
+				var oDiv = document.getElementById('div1');
+				
+				clearInterval(timer);
+				var repeat = function()
+				{
+					/*距离与当前位置关系:目标点-物体当前位置=距离
+					 *
+					 * 当第一次运动时，iTarget为300时，物体会直接到达目标点，
+					 * 所以要用距离/时间=速度
+					 */
+					var iSpeed = (iTarget - oDiv.offsetLeft) / 5;
+					/*
+					 * 问题点：以当前速度运动将无法准确到达目标点，
+					 * 因为当(iTarget - oDiv.offsetLeft) / 5时，必然会出现小数，
+					 * 导致出现无限循环小数值，换句话说，物体的位置将无法到达0
+					 * 对iSpeed用向上及向下取整将可解决从左向右或从右向左无法到达的问题
+					 */
+					iSpeed = (iSpeed > 0) ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+					if(oDiv.offsetLeft == iTarget)
+					{
+						clearInterval(timer);
+					}
+					else
+					{
+						oDiv.style.left = oDiv.offsetLeft + iSpeed + 'px';
+					}
+					document.title = oDiv.offsetLeft + '=' + iSpeed;
+				};
+				timer = setInterval(repeat, 30);
+			}
+		</script>
+	</head>
+	<body>
+		<input type="button" id="btn1" value="start move" />
+		<div id="div1"></div>
+		<span id="spn1"></span>
+	</body>
+</html>

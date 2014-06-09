@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DOM Event</title>
+<style type="text/css">
+#div{
+	width: 200px;
+	height: 200px;
+	background: #CCC;
+}
+</style>
+<script type="text/javascript">
+/*
+ * DOM事件必须用事件绑定方式
+ */
+window.onload = function()
+{
+	function myAddEvent(obj, sEv, fn)
+	{
+		if(obj.attachEvent)
+		{
+			obj.attachEvent('on' + sEv, fn);
+		}
+		else if(obj.addEventListener)
+		{
+			obj.addEventListener(sEv, fn, false);
+		}
+	}
+	
+	var oDiv = document.getElementById('div');
+	/*
+	//IE.CHR
+	oDiv.onmousewheel = function()
+	{
+		alert('IE CHR Event');
+	};
+	//FF 下的DOM事件
+	oDiv.addEventListener('DOMMouseScroll', function()
+	{
+		alert('FF Event');
+	}, false);
+	*/
+	//为三大浏览器做事件兼容
+//	function mouseWheel(ev)
+//	{
+//		var oEvent = ev || event;
+//		alert('IE CHR FF-compatible mode');
+//	}
+
+	//获取IE鼠标滚动方向及距离
+	myAddEvent(oDiv, 'mousewheel', function(ev)
+	{
+		alert('IE CHR-compatible mode');
+		alert(ev.wheelDelta);
+	});
+	//获取FF鼠标滚动方向及距离
+	myAddEvent(oDiv, 'DOMMouseScroll', function(ev)
+	{
+		alert('FF-compatible mode');
+		
+		alert(ev.detail);
+	});
+};
+</script>
+</head>
+<body>
+<div id="div"></div>
+</body>
+</html>

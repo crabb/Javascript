@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>split pages</title>
+<!-- <link rel="stylesheet" href="#" media="screen" /> -->
+<style type="text/css">
+*{
+	margin: 0;
+	padding: 0;
+}
+
+#div1{
+	width: 500px;
+	margin:10px auto;
+}
+
+a{
+	margin: 5px;
+}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+window.onload = function(){
+	pageTool({
+		id: 'div1',
+		curPage: 9,
+		talPage: 10
+	});
+};
+
+function pageTool(opt)
+{
+	if(!opt.id){return false;}
+	
+	var obj = document.getElementById(opt.id);
+	
+	var curPage = opt.curPage || 1;
+	var talPage = opt.talPage || 5;
+	
+	//"首页"出现条件
+	if(curPage >= 4 && talPage >= 6)
+	{
+		var oA = document.createElement('a');
+		oA.href = '#1';
+		oA.innerHTML = '首页';
+		obj.appendChild(oA);
+	}
+	
+	//"上一页"出现条件
+	if(curPage >= 2)
+	{
+		var oA = document.createElement('a');
+		oA.href = '#' + (curPage - 1);
+		oA.innerHTML = '上一页';
+		obj.appendChild(oA);
+	}
+	
+	//总数小于5页的分页情况
+	if(talPage <= 5)
+	{
+		for(var i = 1; i <= talPage; i++)
+		{
+			var oA = document.createElement('a');
+			oA.href = '#' + i;
+			if(curPage == i)
+			{
+				oA.innerHTML = i;
+			}
+			else
+			{
+				oA.innerHTML = '[' + i + ']';
+			}
+			obj.appendChild(oA);
+		}
+	}
+	else
+	{
+		//大于5页的分页
+		for(var i = 1; i <= 5; i++)
+		{
+			var oA = document.createElement('a');
+			
+			//处理1-2页特殊情况
+			if(curPage == 1 || curPage == 2)
+			{
+				oA.href = '#' + i;
+				if(curPage == i)
+				{
+					oA.innerHTML = i;
+				}
+				else
+				{
+					oA.innerHTML = '[' + i + ']';
+				}
+			}
+			//处理倒数1-2页特殊情况
+			else if((talPage - curPage) == 0 || (talPage - curPage) == 1)
+			{
+				oA.href = '#' + (talPage - 5 + i);
+				if((talPage - curPage) == 0 && i == 5)
+				{
+					oA.innerHTML = (talPage - 5 + i);
+				}
+				else if((talPage - curPage) == 1 && i == 4)
+				{
+					oA.innerHTML = (talPage - 5 + i);
+				}
+				else
+				{
+					oA.innerHTML = '[' + (talPage - 5 + i) + ']';
+				}
+			}
+			else
+			{
+				oA.href = '#' + (curPage - 3 + i);
+				if(i == 3)
+				{
+					oA.innerHTML =  curPage - 3 + i;
+				}
+				else
+				{
+					oA.innerHTML = '[' + (curPage - 3 + i) + ']';
+				}
+			}
+			obj.appendChild(oA);
+		}
+	}
+	
+	//"下一页"出现条件
+	if((talPage - curPage) >= 1)
+	{
+		var oA = document.createElement('a');
+		oA.href = '#' + (curPage + 1);
+		oA.innerHTML = '下一页';
+		obj.appendChild(oA);
+	}
+	
+	//"尾页"出现条件
+	if((talPage - curPage) >= 1 && talPage >= 6)
+	{
+		var oA = document.createElement('a');
+		oA.href = '#' + talPage;
+		oA.innerHTML = '尾页';
+		obj.appendChild(oA);
+	}
+	
+	//每个a标签增加链接
+	var aA = obj.getElementsByTagName('a');
+	for(var i = 0, len = aA.length; i < len; i++)
+	{
+		aA[i].onclick = function()
+		{
+			//获取链接中的相对地址用getAttribute('href')再转整型
+			var curNum = parseInt(this.getAttribute('href').substring(1));
+			obj.innerHTML = '';
+			pageTool({id: opt.id, curPage: curNum, talPage: talPage});
+		};
+	}
+}
+</script>
+</head>
+<body>
+<div id="div1">
+	<!--<a href="#1">首页</a>
+	<a href="#3">上一页</a>
+	<a href="#2">[2]</a>
+	<a href="#3">[3]</a>
+	<a href="#4">4</a>
+	<a href="#5">[5]</a>
+	<a href="#6">[6]</a>
+	<a href="#5">下一页</a>
+	<a href="#10">尾页</a>-->
+</div>
+</body>
+</html>

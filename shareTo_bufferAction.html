@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>运动框架实例：分享到</title>
+		<!--<link rel="stylesheet" href="#" media="screen" />-->
+		<style type="text/css">
+			body {
+			    height: 2000px;
+			}
+			
+			#div1 {
+			    width: 100px;
+			    height: 200px;
+			    background: #ccc;
+			    position: absolute;
+			    left: 0px;
+			}
+			
+			#div1 span {
+			    width: 20px;
+			    height: 70px;
+			    background: yellow;
+			    position: absolute;
+			    left: 100px;
+			    top: 65px;
+			    line-height: 23px;
+			    text-align: center;
+			}
+			
+		</style>
+		<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+		<script type="text/javascript" src="scripts/addLoadEvent.js">
+		</script>
+		<script type="text/javascript">
+//			function ent()
+//			{
+//				var oDiv = document.getElementById('div1');
+//				
+//				oDiv.onmouseover = function ()
+//				{
+//					elemsMotion(0);
+//				};
+//				oDiv.onmouseout = function ()
+//				{
+//					elemsMotion(-100);
+//				};
+//			}
+//			addLoadEvent(ent);
+			window.onscroll = function()
+			{
+				var oDiv = document.getElementById('div1');
+				var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+//				oDiv.style.top = scrollTop + (document.documentElement.clientHeight - oDiv.offsetHeight) / 2 + 'px';
+				var t = scrollTop + (document.documentElement.clientHeight - oDiv.offsetHeight) / 2;
+				elemsMotion(t);
+			};
+			//定义定时器
+			var timer = null;
+			//运动框架
+			function elemsMotion(iTarget)
+			{
+				var oDiv = document.getElementById('div1');
+				//首先清除定时器
+				clearInterval(timer);
+				//重开定时器
+				var repeat = function(){
+					//定义速度
+					var iSpeed = (parseInt(iTarget) - oDiv.offsetTop) / 8;
+					iSpeed = (iSpeed > 0) ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+					
+					if (oDiv.offsetTop == iTarget)
+					{
+						clearInterval(timer);
+					}
+					else
+					{
+						oDiv.style.top = oDiv.offsetTop + iSpeed + 'px';
+					}
+					inp1.value = oDiv.style.top + ' Target: ' + iTarget;
+				};
+				timer = setInterval(repeat, 30);
+			}
+		</script>
+	</head>
+	<body>
+		<input type="text" id="inp1" style="position: fixed;"/>
+		<div id="div1">
+			<span>分享到</span>
+		</div>
+	</body>
+</html>

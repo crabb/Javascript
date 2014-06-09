@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Text share to</title>
+<!-- <link rel="stylesheet" href="#" media="screen" /> -->
+<style type="text/css">
+#txt{
+	width: 300px;
+	height: 150px;
+}
+
+#share{
+	position: absolute;
+	display: none;
+}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+window.onload = function()
+{
+	//文字高亮需处理兼容问题
+	function selectText()
+	{
+		if(document.selection)
+		{
+			//IE文字选取高亮
+			return document.selection.createRange().text;
+		}
+		else
+		{
+			//getSelection()函数返回一个对象，需toString()转为字符串
+			return window.getSelection().toString();
+		}
+	}
+	var oTxt = document.getElementById('txt');
+	var oDiv = document.getElementById('share');
+	
+	oTxt.onmouseup = function(ev)
+	{
+		var ev = ev || window.event;
+		var left = ev.clientX;
+		var top = ev.clientY;
+		
+		if(selectText().length > 10)
+		{
+			setTimeout(function(){
+				oDiv.style.display = 'block';
+				oDiv.style.left = left + 'px';
+				oDiv.style.top = top + 'px';
+			}, 600);
+		}
+		else
+		{
+			oDiv.style.display = 'none';
+		}
+	};
+	
+	oTxt.onclick = function(ev)
+	{
+		var ev = ev || window.event;
+		ev.cancelBubble = true;
+	};
+	
+	//点击页面取消图标显示
+	document.onclick = function()
+	{
+		oDiv.style.display = 'none';
+	};
+};
+</script>
+</head>
+<body>
+<p id="txt">
+大明星来下厨
+根据制作单位公布的主食材或主题，
+自由发挥创意，限时15分钟时间，
+制作出色香味俱全之主题创意料理，
+最后再由专门叫人偷呷步的阿基师，
+以及创意料理达人詹姆士共同评分。
+得票数高者为当日优胜者，
+观众朋友上网票选预测将有机会获得精美奖品
+</p>
+<div id="share"><img src="./images/transparent.png" alt="share to" /></div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Framework06 多物体透明度淡入淡出运动框架</title>
+<style type="text/css">
+div.opacity{
+	width: 100px;
+	height: 50px;
+	background: #000080;
+	margin-top: 10px;
+	filter: alpha(opacity: 30);
+	opacity: 0.3;
+}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript" src="./scripts/addLoadEvent.js"></script>
+<script type="text/javascript">
+window.onload = function()
+{
+	var aDiv = document.getElementsByTagName('div');
+	
+	for(var i=0, len = aDiv.length; i < len; i++)
+	{
+		aDiv[i].timer = null;
+		aDiv[i].alpha = 30;
+		aDiv[i].onmouseover = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 100);
+		};
+		
+		aDiv[i].onmouseout = function()
+		{
+			//用this指向当前须运动的物体
+			elemsMotion(this, 30);
+		};
+	}
+	
+};
+//	var timer = null;
+//	var alpha = 30;
+function elemsMotion(obj, iTarget)
+{
+	/*
+	 * BUG1:
+	 * 传参加一个obj，为指明当前须运动的是哪个物体，
+	 * 多物体运动会造成多个物体抢用一个定时器的bug，
+	 * 解决办法：为每个物体自定义一个定时器aDiv[i].timer = null;
+	 * 清除定时器时改为清除当前物体的定时器clearInterval(obj.timer);
+	 * 重开定时器时改为重开当前物体的定时器timer = setInterval(obj.repeat, 30);
+	 */
+	/*
+	 * BUG2:
+	 * 为避免多个物体的alpha值共用一个全局变量alpha值，
+	 * 须为每个物体增加一个自定义alpha属性obj.alpha
+	 * 
+	 * 总结：
+	 * 多物体运动框架所有属性值不能共用;
+	 * 为物体绑定自己的属性
+	 */
+	if(obj.timer)
+	{
+		clearInterval(obj.timer);
+	}
+	var repeat = function()
+	{
+		//缓冲运动定义速度并取整
+		var iSpeed = (iTarget - obj.alpha) / 8;
+		iSpeed = (iSpeed > 0) ? Math.ceil(iSpeed) : Math.floor(iSpeed);
+		
+		if(obj.alpha == iTarget)
+		{
+			clearInterval(obj.timer);
+		}
+		else
+		{
+			obj.alpha = obj.alpha + iSpeed;
+			obj.style.filter = 'filter: alpha(opacity: ' + obj.alpha + ')';
+			obj.style.opacity = obj.alpha /100;
+		}
+	};
+	obj.timer = setInterval(repeat, 30);
+}
+</script>
+</head>
+<body>
+<div class="opacity"></div>
+<div class="opacity"></div>
+<div class="opacity"></div>
+<div class="opacity"></div>
+</body>
+</html>

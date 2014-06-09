@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Progress Bar_Precent</title>
+<!--link rel="stylesheet" href="#" media="screen" />-->
+<style type="text/css">
+#progressBox{
+	width: 300px;
+	height: 50px;
+	border: solid 1px #38a38a;
+	background: white;
+	position: relative;
+}
+
+#progressBar{
+	width: 100%;
+	height: 50px;
+	left: 0;
+	top: 0;
+	z-index: 2;
+	line-height:50px;
+	text-align: center;
+	color: white;
+	position: absolute;
+	font-size: 16px;
+	font-weight: bold;
+	font-family: "Arial Black";
+	clip: rect(0px, 0px, 50px, 0px);
+	background: #abcdef;
+}
+
+#progressTxt{
+	width: 100%;
+	height: 50px;
+	left: 0;
+	top: 0;
+	z-index: 1;
+	line-height:50px;
+	text-align: center;
+	color: black;
+	position: absolute;
+	font-size: 16px;
+	font-weight: bold;
+	font-family: "Arial Black";
+}
+</style>
+<!--<script type="text/javascript" src="http://libs.baidu.com/jquery/1.7.0/jquery.min.js"></script>-->
+<script type="text/javascript">
+window.onload = function()
+{
+	var iNow = 0;
+	
+	var timer = setInterval(function(){
+		if(iNow == 100)
+		{
+			clearInterval(timer);
+		}
+		else
+		{
+			iNow += 5;
+			progressPrent(iNow);
+		}
+	}, 30);
+	
+	function progressPrent(cent)
+	{
+		var oBox = document.getElementById('progressBox');
+		var oBar = document.getElementById('progressBar');
+		var oTxt = document.getElementById('progressTxt');
+		
+		function getStyle(obj, attr, value)
+		{
+			if(arguments.length == 2)
+			{
+				if(obj.currentStyle)
+				{
+					return obj.currentStyle[attr];
+				}
+				else
+				{
+					//getComputedStyle()为获取非行间样式函数
+					return getComputedStyle(obj, false)[attr];
+				}
+			}
+			else if(arguments == 3)
+			{
+				obj.style[attr] = value;
+			}
+		}
+		
+		var totalWid = parseInt(getStyle(oBar, 'width'));
+		oBar.innerHTML = cent + '%';
+		oTxt.innerHTML = cent + '%';
+		
+		oBar.style.clip = 'rect(0px, ' + cent / 100 * totalWid + 'px, 50px, 0px)';
+		
+	}
+};
+
+</script>
+</head>
+<body>
+<div id="progressBox">
+	<div id="progressBar">0%</div>
+	<div id="progressTxt">0%</div>
+</div>
+</body>
+</html>

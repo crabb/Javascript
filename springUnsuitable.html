@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>弹性运动不适用示例</title>
+<style type="text/css">
+#div{
+	width: 100px;
+	height: 20px;
+	background: red;
+}
+</style>
+<script type="text/javascript">
+window.onload = function()
+{
+	var oDiv = document.getElementById('div');
+	oDiv.onmouseover = function()
+	{
+		elemsMotion(oDiv, 300);
+	};
+	oDiv.onmouseout = function()
+	{
+		elemsMotion(oDiv, 20);
+	};
+};
+var iStep = 0;
+var iHeight = 20;
+function elemsMotion(obj, iTarget)
+{
+	if(obj.timer)
+	{
+		clearInterval(obj.timer);
+	}
+	var repeat = function()
+	{
+		iStep += (iTarget - iHeight) / 5;
+		iStep *= 0.7;
+		
+		//判断条件：步速足够小并且距离足够近
+		if(Math.abs(iStep) < 1 && Math.abs(iTarget - iHeight) < 1)
+		{
+			clearInterval(obj.timer);
+			//关闭停止器后直接赋值高度
+			obj.style.height = iTarget + 'px';
+		}
+		else
+		{
+			//弹性运动时由于步速会出现小数， 导致目标点会越界
+			iHeight = iHeight + iStep;
+			
+			//加判断条件可以解决目标点越界的错误，不过表现仍显怪异
+			if(iHeight < 0)
+			{
+				iHeight = 0;
+			}
+			txt.value += 'h: ' + iHeight + ' | ' + ' step: ' + iStep + '\n';
+			obj.style.height = iHeight + 'px';
+		}
+	};
+	obj.timer = setInterval(repeat, 30);
+}
+</script>
+</head>
+<body>
+<textarea id="txt" cols="30" rows="10"></textarea>
+<div id="div"></div>
+</body>
+</html>

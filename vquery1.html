@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Vquery库</title>
+<style type="text/css">
+div{
+	width: 100px;
+	height: 100px;
+	background: #CCC;
+	position: absolute;
+}
+</style>
+<script type="text/javascript" src="./scripts/vQuery.js"></script>
+<script type="text/javascript">
+//new Vquery(function()
+//{
+//	new Vquery('#btn1').click(function(){
+//		alert('ID');
+//	});
+//});
+//new Vquery(function()
+//{
+//	new Vquery('.box').click(function(){
+//		alert('class');
+//	});
+//});
+//new Vquery(function()
+//{
+//	new Vquery('input').click(function(){
+//		alert('input');
+//	});
+//});
+V(function(){
+//	V('#btn1').click(function(){
+//		alert(V('#txt1').attr('value'));
+//	});
+//	V('#btn2').click(function(){
+//		V('#txt1').attr('value', 'btn2 be clicked');
+//	});
+	V('#btn').toggle(function()
+	{
+		alert('a');
+	},
+	function()
+	{
+		alert('b');
+	});
+//	alert(V('input').eq(3).attr('value'));
+//	alert(V('input').eq(1).attr('value'));
+//	V('ul').find('.box').css('background', 'red');
+//	V('li').click(function(){
+//		console.log(V(this).index());
+//	});
+//	V('#div1').hover(function(){
+//		V(this).css({'width':'200px', 'background':'red'});
+//	}, function(){
+//		V(this).css({'width':'100px','background':'#CCC'});
+//	});
+//	V(document).bind('contextmenu', function(){
+//		return false;
+//	});
+//	V('#div1').hover(function(){
+//		V(this).animate({'width':'200', 'height':'200'});
+//	}, function(){
+//		V(this).animate({'width':'100', 'height':'100'});
+//	});
+	V('div').drag();
+});
+//var obj = {width: '200px', height: '200px', background: 'red'};
+//for(var i in obj)
+//{
+//	console.log(i + ':' + obj[i]);
+//}
+</script>
+</head>
+<body>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<input id="txt1" type="text"/>
+<input id="btn" type="button" value="bbb"/>
+<input class="box" id="btn1" type="button" value="ccc"/>
+<input class="box" id="btn2" type="button" value="ddd"/>
+<ul id="ul1">
+	<li></li>
+	<li></li>
+	<li></li>
+</ul>
+<ul>
+	<li class="box"></li>
+	<li class="box"></li>
+	<li></li>
+</ul>
+<ol>
+	<li></li>
+	<li></li>
+	<li></li>
+</ol>
+</body>
+</html>
